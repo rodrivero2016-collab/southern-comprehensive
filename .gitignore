@@ -1,0 +1,23 @@
+# ---------------------------------------------------------------
+# The AI agent console is deliberately NOT published.
+#
+# Its password gate is client-side, which means anyone who views
+# the page source on a public URL can read past it. On GitHub
+# Pages there is no server-side protection available.
+#
+# Keep this line. Run the console locally instead (see DEPLOY.md).
+# If you later move the API key server-side behind real auth,
+# delete these two lines and redeploy.
+# ---------------------------------------------------------------
+admin/
+
+# Build script — not needed on the live site
+build.py
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
