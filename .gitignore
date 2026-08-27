@@ -1,0 +1,33 @@
+# ---------------------------------------------------------------
+# Agent Tools IS published (see /agent-tools/), by explicit choice.
+#
+# Understand what that means: the password check runs in the
+# browser, so it is a deterrent, not real security. Anyone can
+# read past it in View Source.
+#
+# What is NOT exposed: the Anthropic API key. It is never stored
+# in these files -- Roosevelt types it in at runtime and it stays
+# in his browser. Someone bypassing the gate gets an empty
+# interface that demands their own key.
+#
+# What IS exposed: the agent instructions in agent-tools/agents.js
+# are publicly readable.
+#
+# To make this properly secure later, move hosting to Cloudflare
+# Pages and put the password check and the API key in a server
+# function. See DEPLOY.md.
+# ---------------------------------------------------------------
+
+# Build script -- not needed on the live site
+build.py
+
+# Superseded by agent-tools/
+admin/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~

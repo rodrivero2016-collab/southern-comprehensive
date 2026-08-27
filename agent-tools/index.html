@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Tools — Southern Comprehensive Insurance</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#032454">
+<link rel="icon" href="../assets/img/logo.png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+<style>
+  body{background:var(--bg-alt)}
+
+  /* ---------- Gate ---------- */
+  .gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+        background:linear-gradient(140deg,var(--navy) 0%,#052E63 55%,var(--green-700) 145%)}
+  .gate__box{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
+             padding:38px;max-width:430px;width:100%;text-align:center}
+  .gate__box img{height:110px;margin:0 auto 22px}
+  .gate__box h1{font-size:1.5rem;margin-bottom:.3em}
+  .gate__err{color:#A32020;background:#FDECEC;border:1px solid #F2C4C4;border-radius:var(--radius);
+             padding:11px 14px;font-size:.9rem;margin-bottom:16px}
+
+  /* ---------- Console shell ---------- */
+  .console{display:grid;grid-template-columns:290px 1fr;min-height:100vh}
+  .side{background:var(--navy);color:#B9CBE4;padding:22px 0;overflow-y:auto;max-height:100vh;
+        position:sticky;top:0}
+  .side__brand{display:flex;align-items:center;gap:11px;padding:0 20px 20px;
+               border-bottom:1px solid rgba(255,255,255,.13);margin-bottom:16px}
+  .side__brand img{height:44px;background:#fff;border-radius:8px;padding:5px}
+  .side__brand b{color:#fff;font-family:var(--serif);font-size:.98rem;display:block;line-height:1.2}
+  .side__brand span{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#8FBF77;font-weight:700}
+  .side h4{color:#8FA6C4;font-family:var(--sans);font-size:.68rem;letter-spacing:.14em;
+           text-transform:uppercase;padding:16px 20px 8px;margin:0}
+  .agent-btn{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;background:none;
+             border:0;border-left:3px solid transparent;color:#C6D5E9;padding:11px 20px;cursor:pointer;
+             font-family:inherit;font-size:.88rem;line-height:1.4;transition:.14s}
+  .agent-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+  .agent-btn.active{background:rgba(143,191,119,.14);border-left-color:#8FBF77;color:#fff}
+  .agent-btn i{font-style:normal;font-size:1.05rem;flex-shrink:0;width:20px;text-align:center;opacity:.9}
+  .agent-btn b{display:block;font-weight:600}
+  .agent-btn small{color:#8FA6C4;font-size:.76rem;display:block;margin-top:2px}
+  .agent-btn.active small{color:#B9CBE4}
+  .side__foot{padding:18px 20px 0;margin-top:14px;border-top:1px solid rgba(255,255,255,.13);
+              display:flex;flex-direction:column;gap:8px}
+  .side__foot button{background:rgba(255,255,255,.08);border:0;color:#C6D5E9;padding:9px 12px;
+                     border-radius:7px;cursor:pointer;font-family:inherit;font-size:.83rem;text-align:left}
+  .side__foot button:hover{background:rgba(255,255,255,.16);color:#fff}
+
+  /* ---------- Main ---------- */
+  .main{display:flex;flex-direction:column;max-height:100vh}
+  .main__head{background:#fff;border-bottom:1px solid var(--line);padding:18px 30px;
+              display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .main__head h2{margin:0;font-size:1.28rem}
+  .main__head p{margin:3px 0 0;font-size:.87rem;color:var(--muted)}
+  .chat{flex:1;overflow-y:auto;padding:28px 30px;display:flex;flex-direction:column;gap:18px}
+  .msg{max-width:800px;padding:16px 20px;border-radius:var(--radius-lg);font-size:.96rem;line-height:1.65}
+  .msg--user{background:var(--navy);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .msg--ai{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+  .msg--err{background:#FDECEC;border:1px solid #F2C4C4;color:#A32020;align-self:flex-start}
+  .msg h1,.msg h2,.msg h3{font-size:1.06rem;margin:1em 0 .4em;font-family:var(--sans);font-weight:700}
+  .msg h1:first-child,.msg h2:first-child,.msg h3:first-child{margin-top:0}
+  .msg ul,.msg ol{margin:.5em 0;padding-left:1.3em}
+  .msg li{margin-bottom:.3em}
+  .msg p{margin:0 0 .8em}
+  .msg p:last-child{margin-bottom:0}
+  .msg code{background:var(--navy-50);padding:2px 5px;border-radius:4px;font-size:.88em}
+  .msg pre{background:var(--navy-50);padding:14px;border-radius:8px;overflow-x:auto;font-size:.85em}
+  .msg table{margin:.7em 0;font-size:.88rem}
+  .msg--user a{color:#9DC98A}
+  .msg__tools{display:flex;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+  .msg__tools button{background:none;border:1px solid var(--line);border-radius:6px;padding:5px 11px;
+                     font-size:.78rem;cursor:pointer;color:var(--muted);font-family:inherit}
+  .msg__tools button:hover{border-color:var(--green);color:var(--green-700)}
+
+  .starters{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+  .starters button{background:#fff;border:1px solid var(--line);border-radius:20px;padding:9px 16px;
+                   font-size:.86rem;cursor:pointer;color:var(--navy);font-family:inherit;text-align:left}
+  .starters button:hover{border-color:var(--green);background:var(--green-50)}
+
+  .composer{background:#fff;border-top:1px solid var(--line);padding:18px 30px}
+  .composer__row{display:flex;gap:12px;align-items:flex-end;max-width:1000px}
+  .composer textarea{min-height:56px;max-height:220px;resize:none;flex:1}
+  .composer .small{margin:9px 0 0;max-width:1000px}
+
+  .empty{text-align:center;padding:50px 20px;color:var(--muted)}
+  .empty__icon{font-size:2.6rem;margin-bottom:14px;opacity:.5}
+
+  .typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);
+               margin-right:4px;animation:bl 1.4s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}
+  .typing span:nth-child(3){animation-delay:.4s}
+  @keyframes bl{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+  /* ---------- Modal ---------- */
+  .modal{position:fixed;inset:0;background:rgba(3,36,84,.55);display:flex;align-items:center;
+         justify-content:center;padding:24px;z-index:300}
+  .modal__box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:560px;width:100%;
+              max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+
+  @media(max-width:900px){
+    .console{grid-template-columns:1fr}
+    .side{position:static;max-height:none}
+    .main{max-height:none}
+    .chat{padding:20px}
+    .composer{padding:14px 20px}
+    .main__head{padding:16px 20px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= GATE ================= -->
+<div class="gate" id="gate">
+  <div class="gate__box">
+    <img src="../assets/img/logo.png" alt="Southern Comprehensive Insurance, LLC">
+    <h1>Agent Tools</h1>
+    <p class="small muted">Private workspace for Roosevelt Brown Jr.</p>
+    <div class="gate__err hidden" id="gate-err"></div>
+    <form id="gate-form" style="text-align:left;margin-top:22px">
+      <div class="field">
+        <label for="gate-pw">Password</label>
+        <input type="password" id="gate-pw" autocomplete="current-password" required autofocus>
+      </div>
+      <button class="btn btn--primary btn--block" type="submit">Unlock</button>
+    </form>
+    <p class="small muted mt2 mb0" style="font-size:.78rem">Authorized use only. These tools draft;
+    a licensed human approves everything before it reaches a client.</p>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line);text-align:left">
+      <p class="small muted mb0" style="font-size:.76rem;line-height:1.55">
+      <strong style="color:var(--navy)">Before you use this on a shared computer:</strong> this page asks for
+      your own Anthropic API key and keeps it in this browser. Leave &ldquo;remember on this device&rdquo;
+      unchecked on any machine that isn&rsquo;t yours, and use Sign out when you finish.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONSOLE ================= -->
+<div class="console hidden" id="console">
+  <aside class="side">
+    <div class="side__brand">
+      <img src="../assets/img/logo.png" alt="">
+      <span><b>Agent Tools</b><span>Roosevelt Brown Jr.</span></span>
+    </div>
+    <div id="agent-list"></div>
+    <div class="side__foot">
+      <button id="btn-key">&#128273; API key settings</button>
+      <button id="btn-help">&#9432; How this works</button>
+      <button id="btn-lock">&#128274; Sign out</button>
+      <a class="small" href="../index.html" style="color:#8FA6C4;padding:6px 12px">&larr; Back to website</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="main__head">
+      <div>
+        <h2 id="agent-name">Select an agent</h2>
+        <p id="agent-blurb">Choose one from the left to begin.</p>
+      </div>
+      <button class="btn btn--ghost btn--sm" id="btn-clear">Clear conversation</button>
+    </div>
+
+    <div class="chat" id="chat">
+      <div class="empty">
+        <div class="empty__icon">&#9776;</div>
+        <p><strong>Pick an agent to start.</strong></p>
+        <p class="small">Five advisory board members and six working assistants, each with its own
+        instructions and its own memory within a session.</p>
+      </div>
+    </div>
+
+    <div class="composer">
+      <form class="composer__row" id="composer">
+        <textarea id="input" placeholder="Select an agent first…" disabled
+                  aria-label="Message the agent"></textarea>
+        <button class="btn btn--primary" type="submit" id="send" disabled>Send</button>
+      </form>
+      <p class="small muted">The AI drafts. You approve. Nothing reaches a client without a licensed
+      human reading it first.</p>
+    </div>
+  </div>
+</div>
+
+<script src="agents.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   1. PASSWORD GATE
+   ------------------------------------------------------------
+   Change the password by opening this file and replacing the
+   hash below. Generate a new hash in your browser console:
+
+     crypto.subtle.digest('SHA-256', new TextEncoder().encode('YourNewPassword'))
+       .then(b => console.log([...new Uint8Array(b)]
+         .map(x => x.toString(16).padStart(2,'0')).join('')))
+
+   Default password is:  SCI-Agent-2026!
+   CHANGE IT BEFORE THIS GOES ON A PUBLIC SERVER.
+   ============================================================ */
+const PASSWORD_HASH = 'ba0c6dfaeb974616925927fd6d98cf985d901680ef8307fac9c4b58c488a3ce3';
+
+async function sha256(text){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+
+const gate = document.getElementById('gate');
+const consoleEl = document.getElementById('console');
+const gateErr = document.getElementById('gate-err');
+
+function unlock(){
+  gate.classList.add('hidden');
+  consoleEl.classList.remove('hidden');
+  renderAgentList();
+}
+
+if (sessionStorage.getItem('sci_unlocked') === '1') unlock();
+
+document.getElementById('gate-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const pw = document.getElementById('gate-pw').value;
+  const hash = await sha256(pw);
+  if (hash === PASSWORD_HASH){
+    sessionStorage.setItem('sci_unlocked','1');
+    unlock();
+  } else {
+    gateErr.textContent = 'That password is not correct.';
+    gateErr.classList.remove('hidden');
+    document.getElementById('gate-pw').value = '';
+  }
+});
+
+document.getElementById('btn-lock').addEventListener('click', function(){
+  sessionStorage.removeItem('sci_unlocked');
+  sessionStorage.removeItem(KEY_STORE);
+  location.reload();
+});
+
+/* ============================================================
+   2. API KEY
+   ============================================================ */
+const KEY_STORE = 'sci_api_key';
+
+/* Session-first by default: the key is forgotten when the browser closes.
+   "Remember on this device" opts into localStorage, which survives restarts
+   but is readable by anyone using this browser profile. */
+function getKey(){
+  return sessionStorage.getItem(KEY_STORE) || localStorage.getItem(KEY_STORE) || '';
+}
+function setKey(v, persist){
+  sessionStorage.setItem(KEY_STORE, v);
+  if (persist) localStorage.setItem(KEY_STORE, v);
+  else localStorage.removeItem(KEY_STORE);
+}
+function clearKey(){
+  sessionStorage.removeItem(KEY_STORE);
+  localStorage.removeItem(KEY_STORE);
+}
+function keyIsPersisted(){ return !!localStorage.getItem(KEY_STORE); }
+
+function keyModal(){
+  const wrap = document.createElement('div');
+  wrap.className = 'modal';
+  wrap.innerHTML = `
+    <div class="modal__box">
+      <h2 class="mt0">API key</h2>
+      <p>The agents run on Anthropic's API. Paste a key from
+      <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>.
+      It is stored in this browser only and is never sent anywhere except Anthropic.</p>
+      <div class="field">
+        <label for="k-input">Anthropic API key</label>
+        <input type="password" id="k-input" placeholder="sk-ant-..." value="${getKey()}">
+      </div>
+      <div class="field consent">
+        <input type="checkbox" id="k-persist" ${keyIsPersisted() ? 'checked' : ''}>
+        <label for="k-persist" style="font-weight:400">Remember on this device. Leave unchecked and the
+        key is forgotten when you close the browser &mdash; safest on a shared or laptop computer.</label>
+      </div>
+      <div class="panel panel--warn">
+        <h4>Understand this before you host it publicly</h4>
+        <p class="mb0">A key stored in a browser and called directly from a webpage can be read by anyone
+        with access to this computer or this browser profile. That is fine on Roosevelt's own machine. It
+        is not fine on a shared computer, and it is not fine if this folder ever gets uploaded to a public
+        host without protection. See <code>README.md</code> for how to move the key server-side when you
+        are ready.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn--primary" id="k-save">Save key</button>
+        <button class="btn btn--ghost" id="k-clear">Remove key</button>
+        <button class="btn btn--ghost" id="k-close">Close</button>
+      </div>
+    </div>`;
+  document.body.appendChild(wrap);
+  wrap.querySelector('#k-save').onclick = () => {
+    setKey(wrap.querySelector('#k-input').value.trim(),
+           wrap.querySelector('#k-persist').checked);
+    wrap.remove();
+  };
+  wrap.querySelector('#k-clear').onclick = () => { clearKey(); wrap.remove(); };
+  wrap.querySelector('#k-close').onclick = () => wrap.remove();
+  wrap.onclick = e => { if (e.target === wrap) wrap.remove(); };
+}
+document.getElementById('btn-key').addEventListener('click', keyModal);
+
+document.getElementById('btn-help').addEventListener('click', function(){
+  const wrap = document.createElement('div');
+  wrap.className = 'modal';
+  wrap.innerHTML = `
+    <div class="modal__box">
+      <h2 class="mt0">How Agent Tools works</h2>
+      <p>Eleven agents, each with its own written instructions. Pick one on the left, talk to it, and it
+      keeps context for that conversation until you clear it or switch agents.</p>
+      <h3>The advisory board</h3>
+      <p class="small">Five strategic advisors — CEO, Compliance, Marketing, Sales, Client Success. Use
+      these for thinking and planning.</p>
+      <h3>The working assistants</h3>
+      <p class="small">Six task-doers — website answers, lead qualification, content, follow-ups, client
+      care reminders, admin cleanup. Use these to produce drafts.</p>
+      <h3>The ground rule</h3>
+      <p class="small">The AI drafts. Roosevelt approves. Nothing reaches a client, and nothing gets
+      published, without a licensed human reading it first. Every Medicare-related item still goes through
+      carrier or FMO review.</p>
+      <h3>Editing the agents</h3>
+      <p class="small">Open <code>agent-tools/agents.js</code> in any text editor. Each agent's instructions are
+      plain English — rewrite them as the business changes.</p>
+      <div class="btn-row"><button class="btn btn--primary" id="h-close">Got it</button></div>
+    </div>`;
+  document.body.appendChild(wrap);
+  wrap.querySelector('#h-close').onclick = () => wrap.remove();
+  wrap.onclick = e => { if (e.target === wrap) wrap.remove(); };
+});
+
+/* ============================================================
+   3. AGENT LIST
+   ============================================================ */
+let current = null;
+let history = [];
+
+function renderAgentList(){
+  const list = document.getElementById('agent-list');
+  const groups = {};
+  AGENTS.forEach(a => { (groups[a.group] = groups[a.group] || []).push(a); });
+  list.innerHTML = Object.keys(groups).map(g =>
+    '<h4>' + g + '</h4>' + groups[g].map(a =>
+      '<button class="agent-btn" data-id="' + a.id + '">' +
+        '<i>' + a.icon + '</i>' +
+        '<span><b>' + a.name + '</b><small>' + a.blurb + '</small></span>' +
+      '</button>').join('')
+  ).join('');
+  list.querySelectorAll('.agent-btn').forEach(b => {
+    b.onclick = () => selectAgent(b.dataset.id);
+  });
+}
+
+function selectAgent(id){
+  current = AGENTS.find(a => a.id === id);
+  history = [];
+  document.querySelectorAll('.agent-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.id === id));
+  document.getElementById('agent-name').textContent = current.name;
+  document.getElementById('agent-blurb').textContent = current.blurb;
+  const input = document.getElementById('input');
+  input.disabled = false;
+  input.placeholder = 'Message ' + current.name + '…';
+  document.getElementById('send').disabled = false;
+
+  document.getElementById('chat').innerHTML =
+    '<div class="empty">' +
+      '<div class="empty__icon">' + current.icon + '</div>' +
+      '<p><strong>' + current.name + '</strong></p>' +
+      '<p class="small">' + current.blurb + '</p>' +
+      '<div class="starters">' +
+        current.starters.map(s =>
+          '<button data-s="' + s.replace(/"/g,'&quot;') + '">' + s + '</button>').join('') +
+      '</div>' +
+    '</div>';
+  document.querySelectorAll('.starters button').forEach(b => {
+    b.onclick = () => { input.value = b.dataset.s; send(); };
+  });
+  input.focus();
+}
+
+document.getElementById('btn-clear').addEventListener('click', function(){
+  if (current) selectAgent(current.id);
+});
+
+/* ============================================================
+   4. RENDERING
+   ============================================================ */
+function esc(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* Minimal markdown — headings, bold, italic, code, lists, tables */
+function md(src){
+  let t = esc(src);
+  t = t.replace(/```([\s\S]*?)```/g, (m,c) => '<pre>' + c.trim() + '</pre>');
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  t = t.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  t = t.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+
+  const lines = t.split('\n');
+  let out = [], inUl = false, inOl = false, inTable = false;
+  const closeLists = () => {
+    if (inUl){ out.push('</ul>'); inUl = false; }
+    if (inOl){ out.push('</ol>'); inOl = false; }
+  };
+  const closeTable = () => { if (inTable){ out.push('</tbody></table></div>'); inTable = false; } };
+
+  lines.forEach(line => {
+    const tr = line.trim();
+    if (/^\|(.+)\|$/.test(tr)){
+      const cells = tr.slice(1,-1).split('|').map(c => c.trim());
+      if (/^[-:\s|]+$/.test(tr.replace(/\|/g,''))) return; // separator row
+      if (!inTable){
+        closeLists();
+        out.push('<div class="table-wrap"><table><tbody>');
+        inTable = true;
+      }
+      out.push('<tr>' + cells.map(c => '<td>' + c + '</td>').join('') + '</tr>');
+      return;
+    }
+    closeTable();
+    if (/^[-*]\s+/.test(tr)){
+      if (inOl){ out.push('</ol>'); inOl = false; }
+      if (!inUl){ out.push('<ul>'); inUl = true; }
+      out.push('<li>' + tr.replace(/^[-*]\s+/,'') + '</li>');
+    } else if (/^\d+[.)]\s+/.test(tr)){
+      if (inUl){ out.push('</ul>'); inUl = false; }
+      if (!inOl){ out.push('<ol>'); inOl = true; }
+      out.push('<li>' + tr.replace(/^\d+[.)]\s+/,'') + '</li>');
+    } else if (tr === ''){
+      closeLists();
+    } else if (/^<h[123]>/.test(tr) || /^<pre>/.test(tr)){
+      closeLists(); out.push(tr);
+    } else {
+      closeLists(); out.push('<p>' + tr + '</p>');
+    }
+  });
+  closeLists(); closeTable();
+  return out.join('');
+}
+
+const chat = document.getElementById('chat');
+
+function addMsg(role, text){
+  if (chat.querySelector('.empty')) chat.innerHTML = '';
+  const d = document.createElement('div');
+  d.className = 'msg msg--' + role;
+  if (role === 'user'){
+    d.textContent = text;
+  } else if (role === 'err'){
+    d.innerHTML = '<strong>Something went wrong.</strong><br>' + esc(text);
+  } else {
+    d.innerHTML = md(text) +
+      '<div class="msg__tools"><button data-copy>Copy</button></div>';
+    d.querySelector('[data-copy]').onclick = function(){
+      navigator.clipboard.writeText(text);
+      this.textContent = 'Copied';
+      setTimeout(() => { this.textContent = 'Copy'; }, 1600);
+    };
+  }
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
+  return d;
+}
+
+/* ============================================================
+   5. SEND
+   ============================================================ */
+async function send(){
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text || !current) return;
+
+  const key = getKey();
+  if (!key){
+    addMsg('err', 'No API key saved yet. Click "API key settings" in the sidebar and paste your key from console.anthropic.com.');
+    keyModal();
+    return;
+  }
+
+  addMsg('user', text);
+  input.value = '';
+  input.style.height = 'auto';
+  history.push({ role: 'user', content: text });
+
+  const btn = document.getElementById('send');
+  btn.disabled = true;
+  const wait = document.createElement('div');
+  wait.className = 'msg msg--ai typing';
+  wait.innerHTML = '<span></span><span></span><span></span>';
+  chat.appendChild(wait);
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-5',
+        max_tokens: 4096,
+        system: GUARDRAILS + '\n\n---\n\n' + current.prompt,
+        messages: history
+      })
+    });
+    wait.remove();
+
+    if (!res.ok){
+      let detail = 'HTTP ' + res.status;
+      try {
+        const j = await res.json();
+        if (j.error && j.error.message) detail = j.error.message;
+      } catch(e){}
+      if (res.status === 401) detail += '\n\nThat usually means the API key is wrong or expired.';
+      if (res.status === 429) detail += '\n\nRate limited — wait a moment and try again.';
+      addMsg('err', detail);
+      history.pop();
+    } else {
+      const data = await res.json();
+      const reply = (data.content || [])
+        .filter(b => b.type === 'text').map(b => b.text).join('\n');
+      addMsg('ai', reply || '(empty response)');
+      history.push({ role: 'assistant', content: reply });
+    }
+  } catch (err){
+    wait.remove();
+    addMsg('err', err.message + '\n\nIf this says "Failed to fetch," you are most likely opening this file directly from disk. Run a local server instead — see README.md.');
+    history.pop();
+  } finally {
+    btn.disabled = false;
+    input.focus();
+  }
+}
+
+document.getElementById('composer').addEventListener('submit', function(e){
+  e.preventDefault();
+  send();
+});
+
+const input = document.getElementById('input');
+input.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+});
+input.addEventListener('input', function(){
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 220) + 'px';
+});
+
+})();
+</script>
+</body>
+</html>
