@@ -189,8 +189,11 @@ Open `agent-tools/agents.js` in any text editor. The prompts are plain English. 
 business changes — that file is meant to be edited, not treated as code.
 
 ### API key
-Click "API key settings" in the sidebar and paste a key from
-[console.anthropic.com](https://console.anthropic.com). It's stored in that browser only.
+Click "API key settings" in the sidebar and paste a **free Gemini key** from
+[aistudio.google.com/apikey](https://aistudio.google.com/apikey). It's stored in that browser only.
+
+The model is set by `GEMINI_MODEL` near the top of the script in `agent-tools/index.html`. If you ever
+get a 404 "model not found," change it there.
 
 ### ⚠️ Security — read this before hosting the console publicly
 

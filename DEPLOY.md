@@ -8,9 +8,9 @@ Free hosting, free SSL, works with a custom domain. About 15 minutes start to fi
 
 `/agent-tools/` now goes live with the site, by explicit choice. Be clear-eyed about the trade:
 
-**What is not exposed.** The Anthropic API key is never in these files. Roosevelt types it in at
+**What is not exposed.** The Gemini API key is never in these files. Roosevelt types it in at
 runtime and it stays in his browser. Someone who bypasses the password gets an empty interface that
-demands their own key — they cannot spend his money.
+demands their own key — they cannot use his quota.
 
 **What is exposed.** The password check runs in the browser, so it is a deterrent, not security.
 Anyone can read past it in View Source. And the agent instructions in `agent-tools/agents.js` are
@@ -24,12 +24,12 @@ publicly readable — treat them as public documents, not trade secrets.
 - The API key defaults to session-only storage and is forgotten when the browser closes
 - Sign out clears both the session and the key
 
-**Two things to do on the Anthropic side:**
+**Two things to do on the Google side:**
 
-1. Set a **monthly spending limit** on the account at console.anthropic.com → Billing → Limits.
-   Even though the key isn't public, a cap is cheap insurance against a mistake.
+1. Stay on the **free tier** unless usage demands otherwise. If you do enable billing, set a budget
+   alert in Google Cloud — a cap is cheap insurance against a mistake.
 2. Use a **dedicated key** for this, not one shared with other projects, so it can be revoked
-   without breaking anything else.
+   without breaking anything else. Revoke and reissue at aistudio.google.com/apikey.
 
 **When you're ready to do this properly**, move hosting to Cloudflare Pages. It deploys from this
 same GitHub repo, costs nothing at your volume, and lets the password check and the API key live in
@@ -203,5 +203,5 @@ Push to GitHub now, and if you switch later it's about five clicks.
 - [ ] Replace testimonial placeholders with real, written-permission quotes
 - [ ] Carrier/FMO compliance review of every Medicare-related page
 - [ ] Attorney review of `privacy.html` and `terms.html`
-- [ ] Set a monthly spending cap on the Anthropic API key
+- [ ] Confirm the Gemini key works and is dedicated to this site
 - [ ] Change the Agent Tools password from the default
