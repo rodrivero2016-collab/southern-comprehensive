@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /agent-tools/
 Allow: /
 
-Sitemap: https://rodrivero2016-collab.github.io/southern-comprehensive/sitemap.xml
+Sitemap: https://scompinsurance.com/sitemap.xml
