@@ -2,30 +2,30 @@
 (function () {
   'use strict';
 
-  /* ---------- Mobile nav ---------- */
-  var toggle = document.querySelector('.navtoggle');
-  var nav = document.querySelector('.nav');
-  if (toggle && nav) {
-    toggle.addEventListener('click', function () {
-      var open = nav.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      toggle.innerHTML = open ? '&#10005;' : '&#9776;';
+  /* ---------- Menu dropdown ---------- */
+  var mBtn = document.getElementById('menu-btn');
+  var mList = document.getElementById('menu-list');
+  if (mBtn && mList) {
+    var setOpen = function (open) {
+      mList.classList.toggle('open', open);
+      mBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    mBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setOpen(!mList.classList.contains('open'));
     });
     document.addEventListener('click', function (e) {
-      if (window.innerWidth <= 1024 && nav.classList.contains('open') &&
-          !nav.contains(e.target) && !toggle.contains(e.target)) {
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.innerHTML = '&#9776;';
-      }
+      if (!mList.contains(e.target) && !mBtn.contains(e.target)) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mList.classList.contains('open')) { setOpen(false); mBtn.focus(); }
     });
   }
 
-  /* ---------- Mark current page in nav ---------- */
+  /* ---------- Mark current page in the menu ---------- */
   var here = location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav a').forEach(function (a) {
-    var href = a.getAttribute('href');
-    if (href === here) a.setAttribute('aria-current', 'page');
+  document.querySelectorAll('.menu__list a').forEach(function (a) {
+    if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page');
   });
 
   /* ---------- Current year in footer ---------- */
