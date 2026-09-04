@@ -98,6 +98,34 @@
   .modal__box{background:#fff;border-radius:var(--radius-lg);padding:32px;max-width:560px;width:100%;
               max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
 
+  /* ---------- Dashboard ---------- */
+  #dashboard-view{flex:1;overflow-y:auto;padding:28px 30px}
+  .dgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:20px;align-items:start}
+  @media(max-width:1180px){.dgrid{grid-template-columns:1fr 1fr}}
+  @media(max-width:820px){.dgrid{grid-template-columns:1fr}}
+  .dcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px}
+  .dcard h3{margin:0 0 14px;font-size:1.02rem;font-family:var(--sans);font-weight:700;
+            display:flex;align-items:center;gap:9px}
+  .dpill{background:var(--navy-50);color:var(--navy);font-size:.72rem;font-weight:700;
+         padding:3px 9px;border-radius:20px}
+  .dpill--red{background:#FDECEC;color:#8C3A3A}
+  .dday{margin-bottom:16px}
+  .dday:last-child{margin-bottom:0}
+  .dday h4{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+           margin:0 0 8px;font-weight:700}
+  .dev{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--bg-alt);font-size:.9rem}
+  .dev:first-of-type{border-top:0}
+  .dev__t{flex:0 0 84px;color:var(--muted);font-variant-numeric:tabular-nums;font-size:.85rem}
+  .dev__t--late{color:#8C3A3A;font-weight:700}
+  .dev__n{flex:1;color:var(--ink);font-weight:600}
+  .dev__n small{display:block;font-weight:400;color:var(--muted);font-size:.82rem;margin-top:2px}
+  .dstages{display:flex;flex-direction:column;gap:9px}
+  .dstage{display:flex;align-items:center;gap:11px;font-size:.87rem}
+  .dstage span{flex:0 0 108px;color:var(--body)}
+  .dstage b{flex:0 0 26px;text-align:right;color:var(--navy)}
+  .dbar{flex:1;height:7px;background:var(--bg-alt);border-radius:4px;overflow:hidden}
+  .dbar i{display:block;height:100%;background:var(--green);border-radius:4px}
+
   /* ---------- Pipeline ---------- */
   #pipeline-view{flex:1;overflow-y:auto;padding:28px 30px}
   .phead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
@@ -170,11 +198,15 @@
       <span><b>Agent Tools</b><span>Roosevelt Brown Jr.</span></span>
     </div>
     <h4>Workspace</h4>
+    <button class="agent-btn" id="nav-dashboard">
+      <i>&#9632;</i><span><b>Dashboard</b><small>Appointments and pipeline at a glance</small></span>
+    </button>
     <button class="agent-btn" id="nav-pipeline">
       <i>&#128202;</i><span><b>Pipeline</b><small>Track leads and follow-ups</small></span>
     </button>
     <div id="agent-list"></div>
     <div class="side__foot">
+      <button id="btn-google">&#128197; <span id="google-label">Connect Google</span></button>
       <button id="btn-key">&#128273; API key settings</button>
       <button id="btn-help">&#9432; How this works</button>
       <button id="btn-lock">&#128274; Sign out</button>
@@ -200,6 +232,7 @@
       </div>
     </div>
 
+    <div id="dashboard-view" class="hidden"></div>
     <div id="pipeline-view" class="hidden"></div>
 
     <div class="composer" id="composer-wrap">
@@ -214,8 +247,12 @@
   </div>
 </div>
 
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="config.js"></script>
+<script src="google.js"></script>
 <script src="agents.js"></script>
 <script src="pipeline.js"></script>
+<script src="dashboard.js"></script>
 <script>
 (function(){
 'use strict';
@@ -248,6 +285,7 @@ function unlock(){
   gate.classList.add('hidden');
   consoleEl.classList.remove('hidden');
   renderAgentList();
+  if (window.SCI_dashboard) showDashboard();
 }
 
 if (sessionStorage.getItem('sci_unlocked') === '1') unlock();
@@ -343,6 +381,40 @@ function keyModal(){
 }
 document.getElementById('btn-key').addEventListener('click', keyModal);
 
+/* ---------- Google connection ---------- */
+function refreshGoogleLabel(){
+  var el = document.getElementById('google-label');
+  if (!el || !window.SCI_google) return;
+  if (!SCI_google.configured()) el.textContent = 'Google not configured';
+  else if (SCI_google.signedIn()) el.textContent = 'Google connected \u2713';
+  else el.textContent = 'Connect Google';
+}
+document.getElementById('btn-google').addEventListener('click', function(){
+  if (!window.SCI_google) return;
+  if (!SCI_google.configured()){
+    alert('Google is not configured yet.\n\nFinish GOOGLE-SETUP.md, then fill in your Client ID and ' +
+          'Sheet ID in agent-tools/config.js.');
+    return;
+  }
+  if (SCI_google.signedIn()){
+    if (confirm('Disconnect Google? The pipeline will fall back to this browser\u2019s saved copy.')){
+      SCI_google.signOut();
+    }
+  } else {
+    SCI_google.signIn(function(err){
+      if (err) alert('Could not connect to Google:\n\n' + err);
+    });
+  }
+});
+if (window.SCI_google){
+  SCI_google.onChange(function(){
+    refreshGoogleLabel();
+    if (window.SCI_dashboard) SCI_dashboard.render();
+    if (window.SCI_pipeline) SCI_pipeline.render();
+  });
+  refreshGoogleLabel();
+}
+
 document.getElementById('btn-help').addEventListener('click', function(){
   const wrap = document.createElement('div');
   wrap.className = 'modal';
@@ -394,23 +466,40 @@ function renderAgentList(){
 }
 
 /* ---------- View switching ---------- */
-function showPipeline(){
+function hideAllViews(){
   document.getElementById('chat').classList.add('hidden');
   document.getElementById('composer-wrap').classList.add('hidden');
-  document.getElementById('pipeline-view').classList.remove('hidden');
+  document.getElementById('pipeline-view').classList.add('hidden');
+  document.getElementById('dashboard-view').classList.add('hidden');
   document.getElementById('btn-clear').classList.add('hidden');
-  document.getElementById('agent-name').textContent = 'Pipeline';
-  document.getElementById('agent-blurb').textContent = 'Track leads and follow-ups. Stored in this browser only.';
   document.querySelectorAll('.agent-btn').forEach(b => b.classList.remove('active'));
+}
+function showDashboard(){
+  hideAllViews();
+  document.getElementById('dashboard-view').classList.remove('hidden');
+  document.getElementById('nav-dashboard').classList.add('active');
+  document.getElementById('agent-name').textContent = 'Dashboard';
+  document.getElementById('agent-blurb').textContent = 'Appointments and pipeline at a glance.';
+  window.SCI_dashboard.render();
+  window.SCI_dashboard.load();
+}
+document.getElementById('nav-dashboard').addEventListener('click', showDashboard);
+window.SCI_showPipeline = function(){ showPipeline(); };
+
+function showPipeline(){
+  hideAllViews();
+  document.getElementById('pipeline-view').classList.remove('hidden');
   document.getElementById('nav-pipeline').classList.add('active');
+  document.getElementById('agent-name').textContent = 'Pipeline';
+  document.getElementById('agent-blurb').textContent = 'Track leads and follow-ups.';
   window.SCI_pipeline.render();
+  window.SCI_pipeline.pull();
 }
 function showChat(){
+  hideAllViews();
   document.getElementById('chat').classList.remove('hidden');
   document.getElementById('composer-wrap').classList.remove('hidden');
-  document.getElementById('pipeline-view').classList.add('hidden');
   document.getElementById('btn-clear').classList.remove('hidden');
-  document.getElementById('nav-pipeline').classList.remove('active');
 }
 document.getElementById('nav-pipeline').addEventListener('click', showPipeline);
 
