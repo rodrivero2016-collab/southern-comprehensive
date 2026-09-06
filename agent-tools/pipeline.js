@@ -54,12 +54,24 @@
   function toRow(r) {
     return COLS.map(function (c) { return r[c] == null ? '' : r[c]; });
   }
+  /* Sheets may hand back a date as a serial number (e.g. 46273) if it was
+     written before we switched to RAW. Convert those back to yyyy-mm-dd. */
+  function asDate(v) {
+    v = String(v == null ? '' : v).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+    if (/^\d{5}(\.\d+)?$/.test(v)) {
+      var ms = Date.UTC(1899, 11, 30) + Math.round(parseFloat(v)) * 86400000;
+      return new Date(ms).toISOString().slice(0, 10);
+    }
+    return '';
+  }
+
   function fromSheet(o) {
     return {
       id: o.id || uid(), name: o.name || '', county: o.county || '',
       coverage: o.coverage || 'Other', stage: normStage(o.stage), action: o.action || '',
-      due: /^\d{4}-\d{2}-\d{2}$/.test(o.due) ? o.due : '',
-      notes: o.notes || '', updated: o.updated || today(), source: o.source || 'manual',
+      due: asDate(o.due),
+      notes: o.notes || '', updated: asDate(o.updated) || today(), source: o.source || 'manual',
       _row: o._row
     };
   }

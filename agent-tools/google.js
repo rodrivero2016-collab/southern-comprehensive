@@ -158,12 +158,12 @@
   }
 
   function appendRow(values, done) {
-    api(sheetRange('A1') + ':append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS',
+    api(sheetRange('A1') + ':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS',
         { method: 'POST', body: JSON.stringify({ values: [values] }) }, done);
   }
 
   function updateRow(rowNumber, values, done) {
-    api(sheetRange('A' + rowNumber + ':J' + rowNumber) + '?valueInputOption=USER_ENTERED',
+    api(sheetRange('A' + rowNumber + ':J' + rowNumber) + '?valueInputOption=RAW',
         { method: 'PUT', body: JSON.stringify({ values: [values] }) }, done);
   }
 
