@@ -72,6 +72,8 @@
   }
 
   var rows = loadLocal();
+  var filterStage = 'all';
+  var search = '';
   var syncing = false;
   var syncError = null;
 
