@@ -259,7 +259,6 @@
     host.innerHTML =
       '<div class="phead">' +
         '<div>' +
-          '<h2 class="mt0 mb0">Pipeline</h2>' +
           '<p class="small muted mb0">' + rows.length + ' leads' +
             (overdue ? ' &middot; <strong style="color:#8C3A3A">' + overdue + ' overdue</strong>' : '') +
           '</p>' +

@@ -129,7 +129,7 @@
       '<button class="btn btn--ghost btn--sm mt2" id="d-open-pipeline">Open pipeline</button></div>';
 
     host.innerHTML =
-      '<div class="phead"><div><h2 class="mt0 mb0">Dashboard</h2>' +
+      '<div class="phead"><div>' +
         '<p class="small muted mb0">' + new Date().toLocaleDateString('en-US',
           { weekday: 'long', month: 'long', day: 'numeric' }) + '</p></div>' +
         '<div class="btn-row"><button class="btn btn--ghost btn--sm" id="d-refresh">Refresh</button>' +
