@@ -13,7 +13,7 @@
 <link rel="canonical" href="https://scompinsurance.com/schedule.html">
 <meta name="theme-color" content="#032454">
 <link rel="icon" href="assets/img/logo.png">
-<link rel="stylesheet" href="assets/css/styles.css?v=4">
+<link rel="stylesheet" href="assets/css/styles.css?v=5">
 
 </head>
 <body>
@@ -76,24 +76,20 @@
         <p class="eyebrow">Book Online</p>
         <h2>Available times</h2>
 
-        <!-- ================= BOOKING EMBED =================
-             Replace this whole placeholder block with the embed code from
-             Google Calendar: open your appointment schedule, click Share,
-             then "Embed on your website", and paste the <iframe> here.
-             See GOOGLE-SETUP.md Part 2.
-        ================================================== -->
-        <div class="videoslot" style="aspect-ratio:auto;min-height:420px">
-          <div class="videoslot__play" aria-hidden="true">&#128197;</div>
-          <b>PLACEHOLDER &mdash; booking calendar</b>
-          <span>Paste the Google Appointment Schedule embed here. Until then, the button below can point
-          at the booking page URL directly.</span>
+        <!-- Google Appointment Schedule. The gv=true parameter is Google's embed mode.
+             If Google ever changes this, the button underneath always works. -->
+        <div class="bookframe">
+          <iframe src="https://calendar.app.google/SqLU8bptRmmpcVpn9?gv=true" title="Book a free consultation"
+                  loading="lazy" frameborder="0"></iframe>
         </div>
 
         <div class="btn-row mt2">
-          <a class="btn btn--primary" href="#" onclick="return false">
-            <span class="ph">[PASTE BOOKING PAGE URL]</span></a>
+          <a class="btn btn--primary" href="https://calendar.app.google/SqLU8bptRmmpcVpn9" target="_blank" rel="noopener">
+            Open the booking page</a>
           <a class="btn btn--ghost" href="tel:+14044587554">Or call 404-458-7554</a>
         </div>
+        <p class="small muted mt2">Calendar not loading? Use the button above, or call us and we'll
+        find a time together.</p>
       </div>
 
       <div>
@@ -226,7 +222,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=4"></script>
+<script src="assets/js/main.js?v=5"></script>
 
 </body>
 </html>

@@ -12,7 +12,7 @@
 // ---------------------------------------------------------------------------
 // CONFIG — set this
 // ---------------------------------------------------------------------------
-var SHEET_ID   = 'PASTE_YOUR_SHEET_ID_HERE';
+var SHEET_ID   = '1-_QlTimRYXh9rI4pTu4UHlAv3K0T9DbYf6TS5rPXl_U';
 var SHEET_TAB  = 'Pipeline';
 var CALENDAR_ID = 'primary';
 

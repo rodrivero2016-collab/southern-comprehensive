@@ -380,3 +380,9 @@ tbody tr:hover{background:var(--bg-alt)}
 .videoslot span{font-size:.87rem;max-width:44ch;color:var(--body)}
 .videoslot__play{width:60px;height:60px;border-radius:50%;background:var(--navy);color:#fff;
   display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:16px}
+
+/* ---------- Booking embed ---------- */
+.bookframe{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;
+  background:#fff;box-shadow:var(--shadow-sm)}
+.bookframe iframe{display:block;width:100%;height:640px;border:0}
+@media(max-width:640px){.bookframe iframe{height:560px}}

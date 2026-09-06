@@ -9,10 +9,10 @@
 window.SCI_CONFIG = {
 
   /* From GOOGLE-SETUP.md Part 3d — ends in .apps.googleusercontent.com */
-  GOOGLE_CLIENT_ID: '',
+  GOOGLE_CLIENT_ID: '497192430918-98qsseol1evprocih4nben18c8rids9d.apps.googleusercontent.com',
 
   /* From GOOGLE-SETUP.md Part 1 — the long id in the Sheet's URL */
-  SHEET_ID: '',
+  SHEET_ID: '1-_QlTimRYXh9rI4pTu4UHlAv3K0T9DbYf6TS5rPXl_U',
 
   /* Tab name inside that spreadsheet */
   SHEET_TAB: 'Pipeline',
@@ -21,5 +21,5 @@ window.SCI_CONFIG = {
   CALENDAR_ID: 'primary',
 
   /* From GOOGLE-SETUP.md Part 2 — used by the Schedule page and dashboard */
-  BOOKING_URL: ''
+  BOOKING_URL: 'https://calendar.app.google/SqLU8bptRmmpcVpn9'
 };
